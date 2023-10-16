@@ -3,6 +3,7 @@
 
 ## **📑 INDEX**
 
+* [**❓ How to use?**](#how-to-use)
 * [**⚙️ Installation**](#installation)
   * [Python & Git](#i-1)
   * [Download](#i-2)
@@ -16,6 +17,31 @@
 * [**⏰ Cron-Job**](#cron-job)
 * [**⛑️ Need help!**](#help)
 * [**❤️ Credits & Thanks**](#credits)
+
+<a name="how-to-use"></a>
+
+## ❓ How to use?
+**If you lack the knowledge to deploy your own web server, you can use a ready-to-use public instance directly by following steps given below.**
+
+* Open below [URL](https://e5.thecaduceus.eu.org/auth) and get your refresh token.
+  ```
+  https://e5.thecaduceus.eu.org/auth
+  ```
+* Now create a cron-job [here](https://cron-job.org) with following configuration:
+  * **URL:**
+    ```
+    https://e5.thecaduceus.eu.org/call
+    ```
+  * **Headers:**
+    ```json
+    {"Content-Type":"application/json"}
+    ```
+  * **Request Method:** POST
+  * **Request Body:**
+    ```json
+    {"refresh_token": "YourRefreshTokenHere"}
+    ```
+* You did it!🎉
 
 <a name="installation"></a>
 
@@ -141,7 +167,10 @@ docker run -p 8080:8080 msft-e5-renewal
 * Select `main.py` as main file and `cyclic` as branch.
 * Switch to 'Variables' tab and set all environment variables (starting with `E5_`) except `PORT` given above.
 * Click "Connect Cyclic" and it will be deployed automatically.
-* Finally, navigate to your deployed app and in 'Cron' tab set the cron-job as mentioned [here](#cron-job).
+* Finally, you can create cron-job using your Cyclic app endpoint as mentioned [here](#cron-job).
+
+> [!NOTE]
+> Due to the read-only file system provided by Cyclic, the /logs route is disabled.
 
 <a name="routes"></a>
 
@@ -170,6 +199,8 @@ docker run -p 8080:8080 msft-e5-renewal
     ```
   * **Parameters: (as JSON)**
     * `password` (*required*) - The web app password.
+    * `client_id` (*optional*) - ID of your Azure Active Directory app. By default provided client ID in *config.py*.
+    * `client_secret` (*optional*) - Secret of your Azure Active Directory app. By default provided client secret in *config.py*.
     * `refresh_token` (*optional*) - The refresh token of user account to act behalf of. By default provided refresh token in *config.py*.
   * **Example:**
       ```shell
@@ -195,7 +226,7 @@ docker run -p 8080:8080 msft-e5-renewal
 ## ⏰ Cron-Job
 **The Cron-Job will instruct our web server to invoke Microsoft APIs at regular intervals. To ensure proper functionality, the configuration of the cron-job must align with the following settings:**
 
-* **URL**: Your server address, can be an FQDN or an IP address followed by `/call`.
+* **URL**: Server address, can be an FQDN or an IP address followed by `/call`.
   * In case of local deployment (private IP), you must setup cron-job on the same local network or reverse DNS.
 
     ```
